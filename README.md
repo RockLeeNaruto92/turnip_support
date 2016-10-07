@@ -5,6 +5,16 @@
 
 ## Table of contents:
 --------------------------------------------------------------------------------
+- [Requirements](#requirements)
+- [Install](#install)
+- [How to use](#how-to-use)
+- [Test pattern spread sheet](#test-pattern-spread-sheet)
+  - [Feature information part](#feature-information-part)
+  - [Initial data information part](#initial-data-information-part)
+  - [Test procedure and expectation result information part](#test-procedures-and-expectation-results-information-part)
+- [Configuration](#configuration)
+- [All support actions](#all-support-actions)
+- [All support expection methods](#all-support-expection-methods)
 
 ## Requirements
 --------------------------------------------------------------------------------
