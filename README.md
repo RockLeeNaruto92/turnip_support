@@ -170,3 +170,26 @@ Spreadsheet link: https://docs.google.com/spreadsheets/d/ `1es49-XMXjFLLKxtm1Te0
   This is the message displayed in the spreadsheet after running test.
   This attribute is **optional**!
   Default value is: **OK** and **NG**. If you not set, default value is setted.
+
+### All support actions
+
+The basic action is same with the action what is proviced by [capybara](https://github.com/jnicklas/capybara). Params for each actions is same too.
+
+- [visit](https://github.com/jnicklas/capybara#navigating)
+- [click_link](https://github.com/jnicklas/capybara#clicking-links-and-buttons)
+- [click_button](https://github.com/jnicklas/capybara#clicking-links-and-buttons)
+- [click_on](https://github.com/jnicklas/capybara#clicking-links-and-buttons)
+- [fill_in](https://github.com/jnicklas/capybara#interacting-with-forms)
+- [choose](https://github.com/jnicklas/capybara#interacting-with-forms)
+- [check](https://github.com/jnicklas/capybara#interacting-with-forms)
+- [uncheck](https://github.com/jnicklas/capybara#interacting-with-forms)
+- [attack_file](https://github.com/jnicklas/capybara#interacting-with-forms)
+- [select](https://github.com/jnicklas/capybara#interacting-with-forms)
+- [execute_script](https://github.com/jnicklas/capybara#scripting)
+- custom_action: For the `custom_action` action, you must provide below params:
+  - step name
+  - params for corresponding step
+
+Your custom step should be placed in `PROJECT_FOLDER/spec/steps` folder. Reference [turnip](https://github.com/jnicklas/turnip) to write your custom step.
+
+### All support expection methods
