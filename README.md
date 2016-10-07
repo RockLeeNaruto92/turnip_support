@@ -193,3 +193,65 @@ The basic action is same with the action what is proviced by [capybara](https://
 Your custom step should be placed in `PROJECT_FOLDER/spec/steps` folder. Reference [turnip](https://github.com/jnicklas/turnip) to write your custom step.
 
 ### All support expection methods
+
+- have_current_path:
+```
+page.current_url == data[0]
+```
+- have_selector:
+```
+if data[1].present?
+    expect(find("#{data[0]}")).to have_content data[1]
+else
+    expect(page).to have_selector data[0]
+end
+```
+- have_xpath
+```
+expect(page).to have_xpath data[0]
+```
+- have_css
+```
+expect(page).to have_css data[0]
+```
+- have_content
+```
+expect(page).to have_content data[0]
+```
+- no_have_current_path:
+```
+page.current_url != data[0]
+```
+- no_have_selector
+```
+if data[1].present?
+    expect(find("#{data[0]}")).not_to have_content data[1]
+else
+    expect(page).not_to have_selector data[0]
+end
+```
+- no_have_xpath
+```
+expect(page).not_to have_xpath data[0]
+```
+- no_have_css
+```
+expect(page).not_to have_css data[0]
+```
+- no_have_content
+```
+expect(page).not_to have_content data[0]
+```
+- raise_error
+```
+expect(page).to have_selector "section.backtrace"
+```
+- no_raise_error
+```
+expect(page).not_to have_selector "section.backtrace"
+```
+- custom_expect: For the `custom_expect` method, you must provide below params:
+  - step name
+  - params for corresponding step
+
+Your custom step should be placed in `PROJECT_FOLDER/spec/steps` folder. Reference [turnip](https://github.com/jnicklas/turnip) to write your custom step.
