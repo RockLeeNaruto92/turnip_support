@@ -22,3 +22,24 @@ def is_empty_row? worksheet, iterator
   end
   true
 end
+
+# return the hash contains feature's informations of test file with 3 informations: feature_name, backlog link, and status
+# example:
+#   {
+#     feature_name: "ログイン機能",
+#     backlog_link: "https://temona.backlog.jp",
+#     status: "未確認"
+#   }
+def get_feature_informations worksheet
+  @worksheet ||= initialize_worksheet order_num, key, config_json_path
+
+  feature_name = worksheet[1, 2]
+  backlog_link = worksheet[2, 2]
+  status = worksheet[3, 2]
+
+  {
+    feature_name: feature_name,
+    backlog_link: backlog_link,
+    status: status
+  }
+end
