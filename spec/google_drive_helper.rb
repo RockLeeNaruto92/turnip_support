@@ -31,8 +31,6 @@ end
 #     status: "未確認"
 #   }
 def get_feature_informations worksheet
-  @worksheet ||= initialize_worksheet order_num, key, config_json_path
-
   feature_name = worksheet[1, 2]
   backlog_link = worksheet[2, 2]
   status = worksheet[3, 2]
@@ -41,5 +39,25 @@ def get_feature_informations worksheet
     feature_name: feature_name,
     backlog_link: backlog_link,
     status: status
+  }
+end
+
+# return the hash contains test data's informations of test file.
+# example:
+#   {
+#     start_row: integer,
+#     last_row: integer
+#   }
+def get_test_data_informations worksheet
+  start_row = 5
+  last_row = 5
+
+  while !is_empty_row? worksheet, last_row do
+    last_row += 1
+  end
+
+  {
+    start_row: start_row,
+    last_row: last_row - 1
   }
 end

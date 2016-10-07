@@ -51,6 +51,7 @@ end
 
 def read_test_data_informations
   # TODO
+  @test_data = get_test_data_informations @worksheet
   puts "Completed reading test data and saved to @test_data!"
 end
 
