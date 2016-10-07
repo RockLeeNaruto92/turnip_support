@@ -45,6 +45,7 @@ end
 # Read data from spreadsheet_key
 def read_feature_informations
   # TODO
+  @feature_data = get_feature_informations @worksheet
   puts "Completed reading feature informations and saved to @feature_data!"
 end
 
