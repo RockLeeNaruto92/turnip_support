@@ -50,8 +50,8 @@ end
 #     last_row: integer
 #   }
 def get_test_data_informations worksheet
-  start_row = 5
-  last_row = 5
+  start_row = 6
+  last_row = 6
 
   while !is_empty_row? worksheet, last_row do
     last_row += 1
@@ -74,7 +74,7 @@ end
 #         2 => {start_row: 36, last_row: 36},
 #         ...
 #       },
-#       expect_results: {
+#       results: {
 #         1 => {start_row: 42, last_row: 48},
 #         2 => {start_row: 49, last_row: 49},
 #         ...
