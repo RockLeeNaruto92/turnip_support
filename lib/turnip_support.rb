@@ -44,19 +44,19 @@ end
 # ------------------------------------------------------- #
 # Read data from spreadsheet_key
 def read_feature_informations
-  # TODO
   @feature_data = get_feature_informations @worksheet
   puts "Completed reading feature informations and saved to @feature_data!"
 end
 
 def read_test_data_informations
-  # TODO
   @test_data = get_test_data_informations @worksheet
   puts "Completed reading test data and saved to @test_data!"
 end
 
 def read_procedure_informations
-  # TODO
+  return unless @test_data
+  start_row = @test_data[:last_row] + 3
+  @procedures_data = get_procedure_informations @worksheet, start_row
   puts "Completed reading procedure informations and saved to @procedures_data!"
 end
 
