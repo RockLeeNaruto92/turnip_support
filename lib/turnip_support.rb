@@ -9,6 +9,7 @@ ERROR_MESSAGES = {
 }
 SPEC_CONFIG_JSON_FOLDER = "#{Dir.pwd}/spec/configs/"
 SPEC_FEATURE_FOLDER = "#{Dir.pwd}/spec/features/"
+FEATURE_EXTESION = ".feature"
 
 def valid_data?
   unless ARGV.length == 2
@@ -77,7 +78,20 @@ def generate_feature_file
   content += generate_feature_code
   content += generate_test_data_creation_code
   content += generate_scenarios_code
-  puts content
+
+  # create and put code to feature_name.feature
+  put_code_to_file @feature_name, content, true
+end
+
+# ---------------------------------------------------------------------------------- #
+# Put code to file
+# Crete feature_name.feature with content is content
+def put_code_to_file feature_name, content, overwrite = false
+  file_path = SPEC_FEATURE_FOLDER + feature_name + FEATURE_EXTESION
+  return if File.exist?(file_path) && !overwrite
+
+  File.open(file_path, "w"){|f| f.write content}
+  puts "Complete writing code to #{file_path}"
 end
 
 # ---------------------------------------------------------------------------------- #
