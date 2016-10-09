@@ -1,37 +1,128 @@
 require "google_drive"
 require "pry"
 
+# ---------------------------------------------------------------------------------- #
 # define constant
+COMMAND_USAGE = <<-EOS
+Usage:
+  ruby lib/turnip_support.rb [feature] [config_file]
+or
+  ruby lib/turnip_support.rb --init
+EOS
+
+CONFIG_CONTENT = <<-EOS
+
+########################################
+Capybara::Screenshot.class_eval do
+    register_driver(:poltergeist) do |driver, path|
+      driver.render(path, :full => true)
+    end
+end
+
+Capybara::Screenshot.autosave_on_failure = true
+
+Capybara.register_driver :poltergeist do |app|
+  Capybara::Poltergeist::Driver.new(
+    app, js_errors: true, default_wait_time: 30, timeout: 100,
+    phantomjs_logger: STDOUT,
+    phantomjs_options: [
+      '--load-images=no', '--ignore-ssl-errors=yes', '--ssl-protocol=any'
+  ])
+end
+
+Capybara.configure do |config|
+  config.default_driver = :poltergeist
+  config.javascript_driver = :poltergeist
+  config.ignore_hidden_elements = true
+  config.default_wait_time = 20
+end
+
+Capybara.run_server = true
+Capybara.server_port = 3000
+Capybara.app_host = "http://127.0.0.1:3000"
+
+class ActiveRecord::Base
+  mattr_accessor :shared_connection
+  @@shared_connection = nil
+
+  def self.connection
+    @@shared_connection || retrieve_connection
+  end
+end
+
+# Forces all threads to share the same connection. This works on
+# Capybara because it starts the web server in a thread.
+ActiveRecord::Base.shared_connection = ActiveRecord::Base.connection
+EOS
+
 ERROR_MESSAGES = {
   config_file_is_not_exist: "The config json file is not existed! This file must be placed at #{Dir.pwd}/spec/configs/ folder!",
-  command_usage_is_wrong: "Usage: \truby lib/turnip_support.rb [feature] [config_file]",
-  completed: "Completed!"
+  command_usage_is_wrong: COMMAND_USAGE,
+  generate_completed: "Generate code is completed!",
+  init_env_completed: "Initialize environment is completed!"
 }
 SPEC_CONFIG_JSON_FOLDER = "#{Dir.pwd}/spec/configs/"
 SPEC_FEATURE_FOLDER = "#{Dir.pwd}/spec/features/"
+SPEC_FOLDER = "#{Dir.pwd}/spec/"
 FEATURE_EXTESION = ".feature"
+# ---------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------------- #
 
 def valid_data?
-  unless ARGV.length == 2
+  case ARGV.length
+  when 1 # ruby lib/turnip_support.rb --init
+    if ARGV[0] == "--init"
+      @message_code = :init_env_completed
+      return true
+    end
     @message_code = :command_usage_is_wrong
-    return false
+    false
+  when 2 # ruby lib/turnip_support.rb feature_name config_file
+    unless !ARGV[1].nil? && File.exist?("#{Dir.pwd}/spec/configs/#{ARGV[1]}")
+      @message_code = :config_file_is_not_exist
+      return false
+    end
+    @message_code = :generate_completed
+    true
+  else
+    @message_code = :command_usage_is_wrong
+    false
+  end
+end
+
+def messages_error message_code
+  puts "\n#{ERROR_MESSAGES[message_code]}"
+end
+
+def main_process
+  case @message_code
+  when :init_env_completed
+    initialize_environment
+  when :generate_completed
+    set_agruments
+    @worksheet ||= initialize_worksheet @worksheet_order_number, @spreadsheet_key, @config_json_file
+    read_feature_informations
+    read_test_data_informations
+    read_procedure_informations
+    generate_feature_file
   end
 
-  unless !ARGV[1].nil? && File.exist?("#{Dir.pwd}/spec/configs/#{ARGV[1]}")
-    @message_code = :config_file_is_not_exist
-    return false
-  end
+  messages_error @message_code
+end
 
+def set_agruments
   require "#{Dir.pwd}/spec/google_drive_helper.rb"
 
   @feature_name = ARGV[0]
   @config_file = ARGV[1]
   read_config_data SPEC_CONFIG_JSON_FOLDER + @config_file
-  true
 end
 
-def messages_error message_code
-  puts "\n#{ERROR_MESSAGES[message_code]}"
+# ---------------------------------------------------------------------------------- #
+# Init the environment: tunrip_helper.rb,
+def initialize_environment
+  turnip_helper_file_path = SPEC_FOLDER + "turnip_helper.rb"
+  File.open(turnip_helper_file_path, "a"){|f| f.write CONFIG_CONTENT}
 end
 
 # ---------------------------------------------------------------------------------- #
@@ -151,15 +242,5 @@ end
 # ---------------------------------------------------------------------------------- #
 # main process
 
-if valid_data?
-  @worksheet ||= initialize_worksheet @worksheet_order_number, @spreadsheet_key, @config_json_file
-
-  read_feature_informations
-  read_test_data_informations
-  read_procedure_informations
-  generate_feature_file
-
-  @messages_error = :completed
-end
-
-messages_error @message_code
+valid_data?
+main_process
