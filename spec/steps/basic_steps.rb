@@ -116,7 +116,7 @@ step "expect result from row :row_start to :row_end" do |row_start, row_end|
     end
 
     result = send "expect result :method_name with :data", method_name, data.to_s
-    if result.nil?
+    unless [true, false].include? result
       scenario_result = false
       send "update failed image at row :row", row
     end
@@ -143,7 +143,7 @@ end
 
 #
 step "update result at row :row with result :result" do |row, result|
-  message = result ? @ok_msg : @ng_msg
+  message = [true, false].include?(result) ? @ok_msg : @ng_msg
   @worksheet[row, @result_col] = message
   @worksheet.save
   @worksheet.reload
@@ -189,11 +189,10 @@ step "expect result :method_name with :data" do |method_name, data|
     when "have_current_path"
       page.current_url == data[0]
     when "have_selector"
-      if data[1].present?
-        expect(find("#{data[0]}")).to have_content data[1]
-      else
-        expect(page).to have_selector data[0]
-      end
+      return expect(page).to have_selector data[0] unless data[1].present?
+      object = find("#{data[0]}") rescue nil
+      return false if object.nil?
+      expect(object).to have_content data[1]
     when "have_xpath"
       expect(page).to have_xpath data[0]
     when "have_css"
@@ -205,11 +204,10 @@ step "expect result :method_name with :data" do |method_name, data|
     when "no_have_current_path"
       page.current_url != data[0]
     when "no_have_selector"
-      if data[1].present?
-        expect(find("#{data[0]}")).not_to have_content data[1]
-      else
-        expect(page).not_to have_selector data[0]
-      end
+      return expect(page).not_to have_selector(data[0]) unless data[1].present?
+      object = find("#{data[0]}") rescue nil
+      return true if object.nil?
+      expect(object).not_to have_content data[1]
     when "no_have_xpath"
       expect(page).not_to have_xpath data[0]
     when "no_have_css"
@@ -222,7 +220,7 @@ step "expect result :method_name with :data" do |method_name, data|
       custom_method_name, *custom_result_data = data
       send custom_method_name, custom_result_data.to_s
     end
-  rescue RSpec::Expectations::ExpectationNotMetError
-    nil
+  rescue Exception => e
+    e
   end
 end
