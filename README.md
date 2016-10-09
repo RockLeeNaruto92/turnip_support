@@ -191,15 +191,15 @@ Sample: `system_user_scenario.yml`
 spreadsheet_key: YOUR_SPREADSHEET_KEY               # required
 config_file: YOUR_CONFIG_FILE                       # required
 worksheet_order_number: SPECIFICED_WORKSHEET_NUMBER # required
-model_name_col: 2                                   # optional
-obj_id_col: 4                                       # optional
-obj_attr_start_col: 5                               # optional
-action_name_col: 4                                  # optional
-action_params_start_col: 5                          # optional
-expect_method_name: 4                               # optional
-expect_params_start_col: 5                          # optional
-result_col: 9                                       # optional
-image_col: 10                                       # optional
+model_name_col: B                                   # optional
+obj_id_col: D                                       # optional
+obj_attr_start_col: E                               # optional
+action_name_col: D                                  # optional
+action_params_start_col: E                          # optional
+expect_method_name: D                               # optional
+expect_params_start_col: E                          # optional
+result_col: I                                       # optional
+image_col: J                                        # optional
 result_message:                                     # optional
   ok: "good"                                        # optional
   ng: "not good"                                    # optional

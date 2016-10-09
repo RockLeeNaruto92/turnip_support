@@ -3,15 +3,15 @@
 require "#{Rails.root}/spec/google_drive_helper.rb"
 
 # test data
-DEFAULT_MODEL_NAME_COL = 2
-DEFAULT_OBJ_ID_COL = 4
-DEFAULT_OBJ_ATTR_START_COL = 5
-DEFAULT_ACTION_NAME_COL = 4
-DEFAULT_ACTION_PARAMS_START_COL = 5
-DEFAULT_EXPECT_METHOD_NAME = 4
-DEFAULT_EXPECT_PARAMS_START_COL = 5
-DEFAULT_RESULT_COL = 9
-DEFAULT_IMAGE_COL = 10
+DEFAULT_MODEL_NAME_COL = "B"
+DEFAULT_OBJ_ID_COL = "D"
+DEFAULT_OBJ_ATTR_START_COL = "E"
+DEFAULT_ACTION_NAME_COL = "D"
+DEFAULT_ACTION_PARAMS_START_COL = "E"
+DEFAULT_EXPECT_METHOD_NAME = "D"
+DEFAULT_EXPECT_PARAMS_START_COL = "E"
+DEFAULT_RESULT_COL = "I"
+DEFAULT_IMAGE_COL = "J"
 DEFAULT_RESULT_MESSAGE_OK = "OK"
 DEFAULT_RESULT_MESSAGE_NG = "NG"
 CAPYBARA_IMAGE_FOLDER = "#{Rails.root}/tmp/capybara/"
@@ -25,15 +25,15 @@ step "set config file: :config_file" do |config_file|
   @spreadsheet_key = hash["spreadsheet_key"]
   @config_file = CONFIGS_FOLDER + hash["config_file"]
 
-  @model_name_col = hash["model_name_col"] || DEFAULT_MODEL_NAME_COL
-  @obj_id_col = hash["obj_id_col"] || DEFAULT_OBJ_ID_COL
-  @obj_attr_start_col = hash["obj_attr_start_col"] || DEFAULT_OBJ_ATTR_START_COL
-  @action_name_col = hash["action_name_col"] || DEFAULT_ACTION_NAME_COL
-  @action_params_start_col = hash["action_params_start_col"] || DEFAULT_ACTION_PARAMS_START_COL
-  @expect_method_name = hash["expect_method_name"] || DEFAULT_EXPECT_METHOD_NAME
-  @expect_params_start_col = hash["expect_params_start_col"] || DEFAULT_EXPECT_PARAMS_START_COL
-  @result_col = hash["result_col"] || DEFAULT_RESULT_COL
-  @image_col = hash["image_col"] || DEFAULT_IMAGE_COL
+  @model_name_col = (hash["model_name_col"] || DEFAULT_MODEL_NAME_COL).ord - "A".ord + 1
+  @obj_id_col = (hash["obj_id_col"] || DEFAULT_OBJ_ID_COL).ord - "A".ord + 1
+  @obj_attr_start_col = (hash["obj_attr_start_col"] || DEFAULT_OBJ_ATTR_START_COL).ord - "A".ord + 1
+  @action_name_col = (hash["action_name_col"] || DEFAULT_ACTION_NAME_COL).ord - "A".ord + 1
+  @action_params_start_col = (hash["action_params_start_col"] || DEFAULT_ACTION_PARAMS_START_COL).ord - "A".ord + 1
+  @expect_method_name = (hash["expect_method_name"] || DEFAULT_EXPECT_METHOD_NAME).ord - "A".ord + 1
+  @expect_params_start_col = (hash["expect_params_start_col"] || DEFAULT_EXPECT_PARAMS_START_COL).ord - "A".ord + 1
+  @result_col = (hash["result_col"] || DEFAULT_RESULT_COL).ord - "A".ord + 1
+  @image_col = (hash["image_col"] || DEFAULT_IMAGE_COL).ord - "A".ord + 1
   @ok_msg = hash.try(:[], "result_message").try(:[], "ok") || DEFAULT_RESULT_MESSAGE_OK
   @ng_msg = hash.try(:[], "result_message").try(:[], "ng") || DEFAULT_RESULT_MESSAGE_NG
 end
