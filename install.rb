@@ -15,6 +15,14 @@ system "git clone #{REPOSITORY} #{TMP_FOLDER}"
 
 unless File.exist?("spec/steps") && File.directory?("spec/steps")
   system "mkdir -p spec/steps"
+  puts "mkdir -p spec/steps"
 end
+
 system "mv #{TMP_FOLDER}/spec/steps/basic_steps.rb spec/steps"
+puts "mv #{TMP_FOLDER}/spec/steps/basic_steps.rb spec/steps"
+
 system "mv #{TMP_FOLDER}/spec/google_drive_helper.rb spec/"
+puts "mv #{TMP_FOLDER}/spec/google_drive_helper.rb spec/"
+
+system "mv #{TMP_FOLDER}/lib/turnip_support.rb lib/"
+puts "mv #{TMP_FOLDER}/lib/turnip_support.rb lib/"
