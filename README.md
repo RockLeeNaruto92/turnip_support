@@ -8,13 +8,15 @@
 - [Requirements](#requirements)
 - [Install](#install)
 - [How to use](#how-to-use)
-  - [Test pattern spread sheet](#test-pattern-spread-sheet)
-    - [Feature information part](#feature-information-part)
-    - [Initial data information part](#initial-data-information-part)
-    - [Test procedure and expectation result information part](#test-procedures-and-expectation-results-information-part)
-  - [Configuration](#configuration)
+  - [Initialize environment](#initialize-environment)
+  - [Generate feature file](#generate-feature-file)
+- [Test pattern spread sheet template](#test-pattern-spread-sheet-template)
+  - [Feature information part](#feature-information-part)
+  - [Initial data information part](#initial-data-information-part)
+  - [Test procedure and expectation result information part](#test-procedures-and-expectation-results-information-part)
+- [Configuration](#configuration)
 - [All support actions](#all-support-actions)
-- [All support expection methods](#all-support-expection-methods)
+- [All support expectation methods](#all-support-expectation-methods)
 
 ## Requirements
 --------------------------------------------------------------------------------
@@ -26,16 +28,93 @@ For using **turnip-support**, the Rails application must be installed all below 
 - [capybara](https://github.com/jnicklas/capybara)
 - [capybara-screenshot](https://github.com/mattheworiordan/capybara-screenshot)
 - [capybara-webkit](https://github.com/thoughtbot/capybara-webkit)
+- [poltergeist](https://github.com/teampoltergeist/poltergeist)
 
 ## Install
 --------------------------------------------------------------------------------
 
+Run below command:
+
+```
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/ThuBM/turnip-support/master/install.rb)"
+```
 
 
 ## How to use
 --------------------------------------------------------------------------------
 
-### Test pattern spread sheet
+### Initialize environment
+
+At the first time, you must run below command to initialize the enviroment:
+
+```
+cd [YOUR_PROJECT_FOLDER]
+ruby lib/turnip_support.rb --init
+```
+
+This command will append below config to `YOUR_PROJECT_FOLDER/spec/turnip_helper.rb` file:
+
+```
+########################################
+Capybara::Screenshot.class_eval do
+    register_driver(:poltergeist) do |driver, path|
+      driver.render(path, :full => true)
+    end
+end
+
+Capybara::Screenshot.autosave_on_failure = true
+
+Capybara.register_driver :poltergeist do |app|
+  Capybara::Poltergeist::Driver.new(
+    app, js_errors: true, default_wait_time: 30, timeout: 100,
+    phantomjs_logger: STDOUT,
+    phantomjs_options: [
+      '--load-images=no', '--ignore-ssl-errors=yes', '--ssl-protocol=any'
+  ])
+end
+
+Capybara.configure do |config|
+  config.default_driver = :poltergeist
+  config.javascript_driver = :poltergeist
+  config.ignore_hidden_elements = true
+  config.default_wait_time = 20
+end
+
+Capybara.run_server = true
+Capybara.server_port = 3000
+Capybara.app_host = "http://127.0.0.1:3000"
+
+class ActiveRecord::Base
+  mattr_accessor :shared_connection
+  @@shared_connection = nil
+
+  def self.connection
+    @@shared_connection || retrieve_connection
+  end
+end
+
+# Forces all threads to share the same connection. This works on
+# Capybara because it starts the web server in a thread.
+ActiveRecord::Base.shared_connection = ActiveRecord::Base.connection
+EOS
+```
+
+If that command's result has some conflicts with your settings, please fix that conflicts.
+
+### Generate feature file
+
+For test a feature of your app, you must:
+- prepare 2 files:
+  - A test pattern spread sheet. Please follow [Test pattern spread sheet template](#test-pattern-spread-sheet-template) to create your test pattern spread sheet file.
+  - A configure file. [View more](#configuration)
+- run below command to generate feature file
+
+  ```
+cd [YOUR_PROJECT_FOLDER]
+ruby lib/turnip_support.rb [feature_name] [yml_config_file]
+  ```
+
+## Test pattern spread sheet template
 
 First, you must create a test pattern spread sheet has template like below link: [Test pattern template](https://docs.google.com/spreadsheets/d/1es49-XMXjFLLKxtm1Te0kUTWxGGbbQPliaSq-6ku2RI/edit#gid=244159565)
 
@@ -51,7 +130,7 @@ Parts must be seperated by **1 blank line**.
 <img src="./images/main_structure.png" alt="Main structure of test case" title="Main structure">
 
 
-#### Feature information part
+### Feature information part
 
 The feature information part contains first 3 lines. You must set value for 3 cells:
   - **B1** : Name of feature.
@@ -60,7 +139,7 @@ The feature information part contains first 3 lines. You must set value for 3 ce
 
 <img src="./images/feature_structure.png" alt="Feature information structure" title="Feature information structure">
 
-#### Initial data information part
+### Initial data information part
 The initial data information part must be start from line 5. The structure is:
   - Column **B** : Model name.
   - Column **D** : Object ID. This is the id that will be set to the object when creating object.
@@ -77,7 +156,7 @@ In above sample, I want to:
   - create object of model `Role` and custom `name` attribute of each object.
   - create object of model `AdminUser` and custom `loginid`, `password`, `password_confirmation`, `role_id` and `company_id` of each object. ...
 
-#### Test procedures and expectation results information part
+### Test procedures and expectation results information part
 The test procedures and expectation results information part must be start from line that distances the initial data information part by 1 line.
   - This part can contains many procedures that are seperated by 1 blank line.
 
@@ -87,13 +166,13 @@ The test procedures and expectation results information part must be start from 
     - Column **A** : Procedure order number (ID).
     - Column **B** : Scenario name.
     - Column **C** : Branching ID.
-    - Column **D** : Action name. See [All supported actions]().
+    - Column **D** : Action name. See [All support actions](#all-support-actions).
     - Column **E** ~ last column: The params corresponding with each action.
 
 
   - The structure of each expectation result part:
     - Column **C** : Branching ID.
-    - Column **D** : Expectation method name. See [All expection methods]()
+    - Column **D** : Expectation method name. See [All support expectation methods](#all-support-expectation-methods)
     - Column **E** ~ last column: The params corresponding with each expectation method.
     - Column **I** : The default column of test result.
     - Column **J** : The default column of test image.
@@ -101,7 +180,7 @@ The test procedures and expectation results information part must be start from 
 <img src="./images/each_proc_structure.png" alt="Each procedure structure" title="Each procedure information">
 
 
-### Configuration
+## Configuration
 
 For each feature, you must create new *.yml* file with below contents and put it to folder `PROJECT_FOLDER/spec/configs`.
 You should set name of this file for easily understanding the feature name.
@@ -181,7 +260,7 @@ Spreadsheet link: https://docs.google.com/spreadsheets/d/ `1es49-XMXjFLLKxtm1Te0
   This attribute is **optional**!
   Default value is: **OK** and **NG**. If you not set, default value is setted.
 
-### All support actions
+## All support actions
 
 The basic action is same with the action what is proviced by [capybara](https://github.com/jnicklas/capybara). Params for each actions is same too.
 
@@ -202,7 +281,7 @@ The basic action is same with the action what is proviced by [capybara](https://
 
 Your custom step should be placed in `PROJECT_FOLDER/spec/steps` folder. Reference [turnip](https://github.com/jnicklas/turnip) to write your custom step.
 
-### All support expection methods
+## All support expectation methods
 
 - have_current_path:
 ```
