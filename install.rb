@@ -7,6 +7,10 @@
 REPOSITORY = "git@github.com:ThuBM/turnip-support.git"
 TMP_FOLDER = "/tmp/turnip-support"
 
+if File.exist? TMP_FOLDER
+  system "rm -rf #{TMP_FOLDER}"
+end
+
 system "git clone #{REPOSITORY} #{TMP_FOLDER}"
 
 unless File.exist?("spec/steps") && File.directory?("spec/steps")
