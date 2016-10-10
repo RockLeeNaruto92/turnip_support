@@ -45,6 +45,10 @@ end
 
 # TEST DATA
 step "create test data from row :row_start to :row_end" do |row_start, row_end|
+  if Rake::Task.task_defined?("initialization:init_test_data")
+    system "RAILS_ENV=test bundle exec rake initialization:init_test_data"
+  end
+
   row_start = row_start.to_i
   row_end = row_end.to_i
 
