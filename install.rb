@@ -26,3 +26,6 @@ puts "mv #{TMP_FOLDER}/spec/google_drive_helper.rb spec/"
 
 system "mv #{TMP_FOLDER}/lib/turnip_support.rb lib/"
 puts "mv #{TMP_FOLDER}/lib/turnip_support.rb lib/"
+
+system "mv #{TMP_FOLDER}/lib/tasks/turnip_support_init_data.rake lib/tasks/"
+puts "mv #{TMP_FOLDER}/lib/tasks/turnip_support_init_data.rake lib/tasks/"
