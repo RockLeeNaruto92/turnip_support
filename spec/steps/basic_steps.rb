@@ -45,7 +45,7 @@ end
 
 # TEST DATA
 step "create test data from row :row_start to :row_end" do |row_start, row_end|
-  step "custom_init_data"
+  send "custom_init_data"
 
   row_start = row_start.to_i
   row_end = row_end.to_i
@@ -102,6 +102,8 @@ end
 
 # EXPECT RESULT
 step "expect result from row :row_start to :row_end" do |row_start, row_end|
+  send "initialize screenshot folder"
+
   row_start = row_start.to_i
   row_end = row_end.to_i
 
@@ -120,7 +122,8 @@ step "expect result from row :row_start to :row_end" do |row_start, row_end|
     result = send "expect result :method_name with :data", method_name, data.to_s
     unless [true, false].include? result
       scenario_result = false
-      send "update failed image at row :row", row
+      screenshot = Capybara::Screenshot.screenshot_and_save_page
+      @worksheet[row, @image_col] = screenshot[:image]
     end
 
     # update spread sheet
@@ -128,19 +131,6 @@ step "expect result from row :row_start to :row_end" do |row_start, row_end|
   end
 
   raise RSpec::Expectations::ExpectationNotMetError unless scenario_result
-end
-
-#
-step "update failed image at row :row" do |row|
-  # get the last file
-  last_object = CAPYBARA_IMAGE_FOLDER + Dir.entries(CAPYBARA_IMAGE_FOLDER).last
-  if File.directory?(last_object)
-    last_image = Dir.entries(last_object).select{|f| f.include? ".png"}.last
-    last_object = last_object + "/" + last_image
-  end
-
-  # update to worksheet
-  @worksheet[row, @image_col] = last_object
 end
 
 #
@@ -224,5 +214,11 @@ step "expect result :method_name with :data" do |method_name, data|
     end
   rescue Exception => e
     e
+  end
+end
+
+step "initialize screenshot folder" do
+  unless File.exist? CAPYBARA_IMAGE_FOLDER
+    system "mkdir -p #{CAPYBARA_IMAGE_FOLDER}"
   end
 end
