@@ -1,74 +1,14 @@
 require "google_drive"
 require "pry"
+require "#{Dir.pwd}/lib/constants.rb"
 
 # ---------------------------------------------------------------------------------- #
-# define constant
-COMMAND_USAGE = <<-EOS
-Usage:
-  ruby lib/turnip_support.rb [feature] [config_file]
-or
-  ruby lib/turnip_support.rb --init
-EOS
-
-CONFIG_CONTENT = <<-EOS
-
-########################################
-Capybara::Screenshot.class_eval do
-    register_driver(:poltergeist) do |driver, path|
-      driver.render(path, :full => true)
-    end
-end
-
-Capybara::Screenshot.autosave_on_failure = true
-
-Capybara.register_driver :poltergeist do |app|
-  Capybara::Poltergeist::Driver.new(
-    app, js_errors: true, default_wait_time: 30, timeout: 100,
-    phantomjs_logger: STDOUT,
-    phantomjs_options: [
-      '--load-images=no', '--ignore-ssl-errors=yes', '--ssl-protocol=any'
-  ])
-end
-
-Capybara.configure do |config|
-  config.default_driver = :poltergeist
-  config.javascript_driver = :poltergeist
-  config.ignore_hidden_elements = true
-  config.default_wait_time = 20
-end
-
-Capybara.run_server = true
-Capybara.server_port = 3000
-Capybara.app_host = "http://127.0.0.1:3000"
-
-class ActiveRecord::Base
-  mattr_accessor :shared_connection
-  @@shared_connection = nil
-
-  def self.connection
-    @@shared_connection || retrieve_connection
-  end
-end
-
-# Forces all threads to share the same connection. This works on
-# Capybara because it starts the web server in a thread.
-ActiveRecord::Base.shared_connection = ActiveRecord::Base.connection
-EOS
-
-ERROR_MESSAGES = {
-  config_file_is_not_exist: "The config json file is not existed! This file must be placed at #{Dir.pwd}/spec/configs/ folder!",
-  command_usage_is_wrong: COMMAND_USAGE,
-  generate_completed: "Generate code is completed!",
-  init_env_completed: "Initialize environment is completed!"
-}
-SPEC_CONFIG_JSON_FOLDER = "#{Dir.pwd}/spec/configs/"
-SPEC_FEATURE_FOLDER = "#{Dir.pwd}/spec/features/"
-SPEC_FOLDER = "#{Dir.pwd}/spec/"
-FEATURE_EXTESION = ".feature"
-# ---------------------------------------------------------------------------------- #
-# ---------------------------------------------------------------------------------- #
-
 def valid_data?
+  if missing_require_gem?
+    @message_code = :dependency_gem_is_missing
+    return
+  end
+
   case ARGV.length
   when 1 # ruby lib/turnip_support.rb --init
     if ARGV[0] == "--init"
@@ -116,6 +56,13 @@ def set_agruments
   @feature_name = ARGV[0]
   @config_file = ARGV[1]
   read_config_data SPEC_CONFIG_JSON_FOLDER + @config_file
+end
+
+# ---------------------------------------------------------------------------------- #
+def missing_require_gem?
+  DEPENDENCY_GEMS.each do |gem_name|
+    return true if system "bundle show #{gem_name}"
+  end
 end
 
 # ---------------------------------------------------------------------------------- #

@@ -18,14 +18,11 @@ unless File.exist?("spec/steps") && File.directory?("spec/steps")
   puts "mkdir -p spec/steps"
 end
 
-system "mv #{TMP_FOLDER}/spec/steps/basic_steps.rb spec/steps"
-puts "mv #{TMP_FOLDER}/spec/steps/basic_steps.rb spec/steps"
+system "mv #{TMP_FOLDER}/spec/steps/* spec/steps"
+puts "mv #{TMP_FOLDER}/spec/steps/* spec/steps"
 
 system "mv #{TMP_FOLDER}/spec/google_drive_helper.rb spec/"
 puts "mv #{TMP_FOLDER}/spec/google_drive_helper.rb spec/"
 
-system "mv #{TMP_FOLDER}/lib/turnip_support.rb lib/"
-puts "mv #{TMP_FOLDER}/lib/turnip_support.rb lib/"
-
-system "mv #{TMP_FOLDER}/lib/tasks/turnip_support_init_data.rake lib/tasks/"
-puts "mv #{TMP_FOLDER}/lib/tasks/turnip_support_init_data.rake lib/tasks/"
+system "mv #{TMP_FOLDER}/lib/* lib/"
+puts "mv #{TMP_FOLDER}/lib/* lib/"
