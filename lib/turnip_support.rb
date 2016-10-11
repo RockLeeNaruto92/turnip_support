@@ -61,8 +61,9 @@ end
 # ---------------------------------------------------------------------------------- #
 def missing_require_gem?
   DEPENDENCY_GEMS.each do |gem_name|
-    return true if system "bundle show #{gem_name}"
+    return true unless system "bundle show #{gem_name}"
   end
+  false
 end
 
 # ---------------------------------------------------------------------------------- #
