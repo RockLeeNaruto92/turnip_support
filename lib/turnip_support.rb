@@ -129,6 +129,10 @@ def put_code_to_file feature_name, content, overwrite = false
   file_path = SPEC_FEATURE_FOLDER + feature_name + FEATURE_EXTESION
   return if File.exist?(file_path) && !overwrite
 
+  unless File.exist? SPEC_FEATURE_FOLDER
+    system "mkdir -p #{SPEC_FEATURE_FOLDER}"
+  end
+
   File.open(file_path, "w"){|f| f.write content}
   puts "Complete writing code to #{file_path}"
 end
