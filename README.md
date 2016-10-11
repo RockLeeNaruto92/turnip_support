@@ -1,10 +1,8 @@
 # turnip-support
---------------------------------------------------------------------------------
 **turnip-support** is the tool that support testing features of Rails applications.
 
 
 ## Table of contents:
---------------------------------------------------------------------------------
 - [Requirements](#requirements)
 - [Install](#install)
 - [How to use](#how-to-use)
@@ -19,19 +17,17 @@
 - [All support expectation methods](#all-support-expectation-methods)
 
 ## Requirements
---------------------------------------------------------------------------------
 
 For using **turnip-support**, the Rails application must be installed all below gems:
-- [factory_girl](https://github.com/thoughtbot/factory_girl)
+- [factory_girl_rails](https://github.com/thoughtbot/factory_girl_rails)
 - [google_drive](https://github.com/gimite/google-drive-ruby)
 - [turnip](https://github.com/jnicklas/turnip)
 - [capybara](https://github.com/jnicklas/capybara)
 - [capybara-screenshot](https://github.com/mattheworiordan/capybara-screenshot)
-- [capybara-webkit](https://github.com/thoughtbot/capybara-webkit)
 - [poltergeist](https://github.com/teampoltergeist/poltergeist)
+- [rspec-rails](https://github.com/rspec/rspec-rails)
 
 ## Install
---------------------------------------------------------------------------------
 
 Run below command:
 
@@ -39,9 +35,7 @@ Run below command:
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/ThuBM/turnip-support/master/install.rb)"
 ```
 
-
 ## How to use
---------------------------------------------------------------------------------
 
 ### Initialize environment
 
@@ -55,7 +49,18 @@ ruby lib/turnip_support.rb --init
 This command will append below config to `YOUR_PROJECT_FOLDER/spec/turnip_helper.rb` file:
 
 ```
-########################################
+require "turnip"
+require "turnip/capybara"
+require "turnip/rspec"
+require "capybara"
+require "capybara-screenshot/rspec"
+require "pry"
+require "capybara/poltergeist"
+require "rails_helper"
+
+# turnip_support configuration
+Dir.glob("spec/steps/**/*steps.rb"){|f| load f, true}
+
 Capybara::Screenshot.class_eval do
     register_driver(:poltergeist) do |driver, path|
       driver.render(path, :full => true)
@@ -99,7 +104,7 @@ ActiveRecord::Base.shared_connection = ActiveRecord::Base.connection
 EOS
 ```
 
-If that command's result has some conflicts with your settings, please fix that conflicts.
+If the dependency gems is not installed, please install.
 
 ### Generate feature file
 
