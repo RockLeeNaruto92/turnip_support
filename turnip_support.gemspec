@@ -15,7 +15,8 @@ Gem::Specification.new do |s|
     "lib/turnip_support.rb",
     "lib/turnip_constants.rb",
     "lib/tasks/turnip_support.rake",
-    "lib/turnip_support/railtie.rb"
+    "lib/turnip_support/railtie.rb",
+    "lib/templates/turnip_helper.rb"
   ]
 
   s.add_dependency "google_drive"

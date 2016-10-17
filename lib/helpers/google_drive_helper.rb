@@ -1,5 +1,6 @@
 require "active_support/concern"
 require "openssl"
+require "google_drive"
 
 module GoogleDriveHelper
   extend ActiveSupport::Concern

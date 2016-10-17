@@ -1,3 +1,6 @@
+require "google_drive"
+require "active_support/concern"
+
 module CodeGeneratorHelper
   extend ActiveSupport::Concern
 
