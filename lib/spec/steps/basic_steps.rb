@@ -1,6 +1,6 @@
 # coding: utf-8
 
-require "#{Rails.root}/spec/google_drive_helper.rb"
+require "#{File.dirname(__FILE__)}/../../turnip_support/google_drive_instance.rb"
 
 # test data
 DEFAULT_MODEL_NAME_COL = "B"
@@ -39,7 +39,7 @@ step "set config file: :config_file" do |config_file|
 end
 
 step "initalize worksheet" do
-  @worksheet ||= initialize_worksheet @worksheet_order_number,
+  @worksheet ||= TurnipSupport::GoogleDriveInstance.initialize_worksheet @worksheet_order_number,
     @spreadsheet_key, @config_file
 end
 

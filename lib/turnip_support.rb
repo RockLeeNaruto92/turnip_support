@@ -14,15 +14,15 @@ module TurnipSupport
       # validate input data
       def valid_data? params
         case params.length
-        when 2 # ruby lib/turnip_support.rb --init
+        when 2 # bundle exec rake turnip_support init
           if params[1] == "init"
             @message_code = :init_env_completed
             return true
           end
           @message_code = :command_usage_is_wrong
           false
-        when 3 # ruby lib/turnip_support.rb feature_name config_file
-          unless !params[2].nil? && File.exist?("#{Dir.pwd}/spec/configs/#{params[1]}")
+        when 3 # bundle exec rake [feature_name] [config_file]
+          unless !params[2].nil? && File.exist?("#{Dir.pwd}/spec/configs/#{params[2]}")
             @message_code = :config_file_is_not_exist
             return false
           end
@@ -40,9 +40,9 @@ module TurnipSupport
       end
 
       #
-      def set_agruments
-        @feature_name = params[0]
-        @config_file = params[1]
+      def set_agruments params
+        @feature_name = params[1]
+        @config_file = params[2]
         read_config_data SPEC_CONFIG_JSON_FOLDER + @config_file
       end
 
@@ -88,12 +88,12 @@ module TurnipSupport
 
       # ----------------------------------------------------------------------------- #
       # Main flow
-      def main_process
+      def main_process params
         case @message_code
         when :init_env_completed
           initialize_environment
         when :generate_completed
-          set_agruments
+          set_agruments params
           @worksheet ||= initialize_worksheet @worksheet_order_number,
             @spreadsheet_key, @config_json_file
           read_feature_informations
