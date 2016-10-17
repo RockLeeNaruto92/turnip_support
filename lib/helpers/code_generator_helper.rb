@@ -10,7 +10,7 @@ module CodeGeneratorHelper
       return unless @procedures_data
 
       content = <<-EOS
-    # encoding: utf-8
+# encoding: utf-8
 
       EOS
 
@@ -41,7 +41,7 @@ module CodeGeneratorHelper
       return "" if @feature_data.nil?
 
       <<-EOS
-    Feature: #{@feature_data[:feature_name]}
+Feature: #{@feature_data[:feature_name]}
       EOS
     end
 
@@ -50,9 +50,9 @@ module CodeGeneratorHelper
       return "" if @test_data.nil?
 
       <<-EOS
-      Background:
-        Given set config file: "#{@config_file}"
-        And create test data from row "#{@test_data[:start_row]}" to "#{@test_data[:last_row]}"
+  Background:
+    Given set config file: "#{@config_file}"
+    And create test data from row "#{@test_data[:start_row]}" to "#{@test_data[:last_row]}"
       EOS
     end
 
@@ -64,21 +64,21 @@ module CodeGeneratorHelper
       @procedures_data.each do |_, proc_data|
         content += <<-EOS
 
-      Scenario: #{proc_data[:scenario_name]}
-        EOS
+  Scenario: #{proc_data[:scenario_name]}
+    EOS
 
         common_last_row = proc_data[:actions][1][:start_row] - 1
         if common_last_row > proc_data[:start_row]
           content += <<-EOS
-        Given do actions from row "#{proc_data[:start_row]}" to "#{common_last_row}"
-          EOS
+    Given do actions from row "#{proc_data[:start_row]}" to "#{common_last_row}"
+      EOS
         end
 
         proc_data[:actions].each do |key, action_data|
           expect_data = proc_data[:results][key]
           content += <<-EOS
-        When do actions from row "#{action_data[:start_row]}" to "#{action_data[:last_row]}"
-        Then expect result from row "#{expect_data[:start_row]}" to "#{expect_data[:last_row]}"
+    When do actions from row "#{action_data[:start_row]}" to "#{action_data[:last_row]}"
+    Then expect result from row "#{expect_data[:start_row]}" to "#{expect_data[:last_row]}"
           EOS
         end
       end

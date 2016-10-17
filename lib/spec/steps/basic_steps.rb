@@ -39,8 +39,8 @@ step "set config file: :config_file" do |config_file|
 end
 
 step "initalize worksheet" do
-  @worksheet ||= TurnipSupport::GoogleDriveInstance.initialize_worksheet @worksheet_order_number,
-    @spreadsheet_key, @config_file
+  @worksheet ||= TurnipSupport::GoogleDriveInstance.initialize_worksheet(
+    @worksheet_order_number, @spreadsheet_key, @config_file)
 end
 
 # TEST DATA
@@ -71,9 +71,11 @@ step "create test data from row :row_start to :row_end" do |row_start, row_end|
     end
 
     # read attr values
-    attr_values = {id: @worksheet[row, @obj_id_col]}
+    # attr_values = {id: @worksheet[row, @obj_id_col]}
     attr_names.each_with_index do |attr, index|
-      attr_values[attr] = @worksheet[row, @obj_attr_start_col + index]
+      temp_data = @worksheet[row, @obj_attr_start_col + index]
+      temp_data = eval(temp_data) if attr.pluralize == attr
+      attr_values[attr] = temp_data
     end
 
     # create data in here
@@ -181,10 +183,13 @@ step "expect result :method_name with :data" do |method_name, data|
     when "have_current_path"
       page.current_url == data[0]
     when "have_selector"
-      return expect(page).to have_selector data[0] unless data[1].present?
+      count = eval(data[2]) || 1
+      unless data[1].present?
+        return expect(page).to have_selector(data[0], count: count)
+      end
       object = find("#{data[0]}") rescue nil
       return false if object.nil?
-      expect(object).to have_content data[1]
+      expect(object).to have_content(data[1], count: count)
     when "have_xpath"
       expect(page).to have_xpath data[0]
     when "have_css"

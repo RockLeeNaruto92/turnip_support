@@ -32,5 +32,6 @@ ERROR_MESSAGES = {
 
 SPEC_CONFIG_JSON_FOLDER = "#{Dir.pwd}/spec/configs/"
 SPEC_FEATURE_FOLDER = "#{Dir.pwd}/spec/features/"
+SPEC_STEPS_FOLDER = "#{Dir.pwd}/spec/steps/"
 SPEC_FOLDER = "#{Dir.pwd}/spec/"
 FEATURE_EXTESION = ".feature"
