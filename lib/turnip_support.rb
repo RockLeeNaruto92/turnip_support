@@ -46,7 +46,7 @@ module TurnipSupport
         read_config_data SPEC_CONFIG_JSON_FOLDER + @config_file
       end
 
-      # Init the environment: tunrip_helper.rb,
+      # Init the environment: turnip_helper.rb,
       def initialize_environment
         system "bundle exec rails generate rspec:install"
 
@@ -55,7 +55,10 @@ module TurnipSupport
         File.open(turnip_helper_file_path, "a"){|f| f.write CONFIG_CONTENT}
 
         # copy basic_steps.rb
-        custom_steps_file_path = SPEC_FOLDER + "steps/custom_steps.rb"
+        unless File.exist? SPEC_STEPS_FOLDER
+          system "mkdir -p #{SPEC_STEPS_FOLDER}"
+        end
+        custom_steps_file_path = SPEC_STEPS_FOLDER + "custom_steps.rb"
         File.open(custom_steps_file_path, "a"){|f| f.write CUSTOM_STEPS_CONTENT}
       end
 
