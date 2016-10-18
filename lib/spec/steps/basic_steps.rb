@@ -8,7 +8,7 @@ DEFAULT_OBJ_ID_COL = "D"
 DEFAULT_OBJ_ATTR_START_COL = "E"
 DEFAULT_ACTION_NAME_COL = "D"
 DEFAULT_ACTION_PARAMS_START_COL = "E"
-DEFAULT_EXPECT_METHOD_NAME = "D"
+DEFAULT_EXPECT_METHOD_NAME_COL = "D"
 DEFAULT_EXPECT_PARAMS_START_COL = "E"
 DEFAULT_RESULT_COL = "I"
 DEFAULT_IMAGE_COL = "J"
@@ -30,7 +30,7 @@ step "set config file: :config_file" do |config_file|
   @obj_attr_start_col = (hash["obj_attr_start_col"] || DEFAULT_OBJ_ATTR_START_COL).ord - "A".ord + 1
   @action_name_col = (hash["action_name_col"] || DEFAULT_ACTION_NAME_COL).ord - "A".ord + 1
   @action_params_start_col = (hash["action_params_start_col"] || DEFAULT_ACTION_PARAMS_START_COL).ord - "A".ord + 1
-  @expect_method_name = (hash["expect_method_name"] || DEFAULT_EXPECT_METHOD_NAME).ord - "A".ord + 1
+  @expect_method_name_col = (hash["expect_method_name_col"] || DEFAULT_EXPECT_METHOD_NAME_COL).ord - "A".ord + 1
   @expect_params_start_col = (hash["expect_params_start_col"] || DEFAULT_EXPECT_PARAMS_START_COL).ord - "A".ord + 1
   @result_col = (hash["result_col"] || DEFAULT_RESULT_COL).ord - "A".ord + 1
   @image_col = (hash["image_col"] || DEFAULT_IMAGE_COL).ord - "A".ord + 1
@@ -115,7 +115,7 @@ step "expect result from row :row_start to :row_end" do |row_start, row_end|
   scenario_result = true
   data = Array.new
   (row_start..row_end).each do |row|
-    method_name = @worksheet[row, @expect_method_name]
+    method_name = @worksheet[row, @expect_method_name_col]
     data.clear
     (@expect_params_start_col..@worksheet.num_cols).each do |col|
       data.push @worksheet[row, col]
