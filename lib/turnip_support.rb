@@ -50,6 +50,9 @@ module TurnipSupport
       def initialize_environment
         system "bundle exec rails generate rspec:install"
 
+        # add turnip config to .rspec
+        File.open(RSPEC_FILE_PATH, "a"){|f| f.write RSPEC_TURNIP_CONFIG}
+
         # config turnip_helper.rb
         turnip_helper_file_path = SPEC_FOLDER + "turnip_helper.rb"
         File.open(turnip_helper_file_path, "a"){|f| f.write CONFIG_CONTENT}
