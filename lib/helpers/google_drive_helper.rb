@@ -96,7 +96,7 @@ module GoogleDriveHelper
       proc_index = 0
       proc_data = nil
       branch_index = 0
-      branch_data = nil
+      branch_data = Hash.new
       last_row = start_row
 
       # current_mode:

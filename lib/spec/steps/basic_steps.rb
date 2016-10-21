@@ -1,6 +1,7 @@
 # coding: utf-8
 
 require "#{File.dirname(__FILE__)}/../../turnip_support/google_drive_instance.rb"
+require "factory_girl_rails"
 
 # test data
 DEFAULT_MODEL_NAME_COL = "B"
