@@ -1,54 +1,53 @@
 # turnip-support
-**turnip-support** is the tool that support testing features of Rails applications.
+**turnip-support** supports testing Rails application features using [Turnip](https://github.com/jnicklas/turnip).
 
 
 ## Table of contents:
 - [Requirements](#requirements)
-- [Install](#install)
-- [How to use](#how-to-use)
+- [Installation](#installation)
+- [Usage](#usage)
   - [Initialize environment](#initialize-environment)
   - [Generate feature file](#generate-feature-file)
 
-## Install
+## Installation
 
-Add below line to your Gemfile.
+Add this line to your Gemfile:
 
+```ruby
+  gem "turnip_support", git: "https://github.com/ThuBM/turnip_support"
 ```
-gem "turnip_support", git: "https://github.com/ThuBM/turnip_support"
-```
 
-then run
+Now run:
 
-```
+```shell
 bundle install
 ```
 
-## How to use
+## Usage
 
 ### Initialize environment
 
-At the first time, you must run below command to initialize the enviroment:
+On first use, you need to initialize the test enviroment:
 
-```
-cd [YOUR_PROJECT_FOLDER]
-rake turnip_support init
+```shell
+  cd <your project folder>
+  rake turnip_support init
 ```
 
 ### Generate feature file
 
-For test a feature of your app, you must:
-- prepare 2 files:
-  - A test pattern spread sheet. Please follow [Test pattern spread sheet template](https://github.com/ThuBM/turnip_support/wiki/Test-pattern-spread-sheet-template) to create your test pattern spread sheet file.
-  - A configure file. [View more](https://github.com/ThuBM/turnip_support/wiki/Configuration)
-- run below command to generate the corresponding feature file:
+To test a feature of your application, you first need to prepare two files:
+- A test pattern spread sheet. Please follow [Test pattern spread sheet template](https://github.com/ThuBM/turnip_support/wiki/Test-pattern-spread-sheet-template) to create your test pattern spread sheet file.
+- A configure file. [View more](https://github.com/ThuBM/turnip_support/wiki/Configuration)
 
-```
-cd [YOUR_PROJECT_FOLDER]
-rake turnip_support [feature_name] [yml_config_file]
+Now run the below command to generate your feature file:
+
+```shell
+  rake turnip_support [feature_name] [yml_config_file]
 ```
 
-Now you can run below command for testing:
+Now you can run the feature test:
 
-```
-rspec spec/features/[feature_name].feature
+```shell
+  rspec spec/features/[feature_name].feature
 ```
